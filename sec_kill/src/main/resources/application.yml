@@ -167,7 +167,7 @@ mybatis-plus:
   #配置Mapper映射文件
   mapper-locations: classpath*:/mapper/*Mapper.xml
   #配置MyBatis数据返回类型别名（默认别名是类名）
-  type-aliases-package: cn.pointer.lrl.generator.pojo,cn.pointer.lrl.vo,cn.pointer.lrl.po
+  type-aliases-package: cn.lrl.generator.pojo,cn.lrl.vo,cn.lrl.po
   # 配置逻辑删除
   global-config:
     db-config:
