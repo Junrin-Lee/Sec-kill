@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>商品列表</title>
+  <!-- jquery -->
+  <script type="text/javascript" src="/js/jquery.min.js"></script>
+  <!-- bootstrap -->
+  <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css"/>
+  <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+  <!-- layer -->
+  <script type="text/javascript" src="/layer/layer.js"></script>
+  <!-- common.js -->
+  <script type="text/javascript" src="/js/common.js"></script>
+</head>
+<body>
+<div class="panel panel-default">
+  <div class="panel-heading">商品详情</div>
+  <table class="table">
+    <tr>
+      <td>商品名称</td>
+      <td id="goodsName" colspan="3"></td>
+    </tr>
+    <tr>
+      <td>商品店家</td>
+      <td id="goodsProducer" colspan="3"></td>
+    </tr>
+    <tr>
+      <td>商品图片</td>
+      <td colspan="3"><img id="goodsImg"/></td>
+    </tr>
+    <tr>
+      <td>商品原价</td>
+      <td id="goodsPrice" colspan="3"></td>
+    </tr>
+    <tr>
+      <td>库存数量</td>
+      <td id="goodsStock" colspan="3"></td>
+    </tr>
+    <tr>
+      <td>商品详情</td>
+      <td id="goodsDetail" colspan="3"></td>
+    </tr>
+    <tr>
+      <input type="hidden" id="goodsId"/>
+      <td id="seckillTip"></td>
+      <td>
+        <div>
+          <button type="button" class="btn btn-primary" id="buyButton" onclick="doOrder()">立即购买</button>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
+<script lang=type="text/javascript" src="/js/goodsDetail.js"></script>
+</html>

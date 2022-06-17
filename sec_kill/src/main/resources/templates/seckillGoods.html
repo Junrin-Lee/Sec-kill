@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>商品列表</title>
+  <!-- jquery -->
+  <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+  <!-- bootstrap -->
+  <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+  <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+  <!-- layer -->
+  <script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+  <!-- common.js -->
+  <script type="text/javascript" th:src="@{/js/common.js}"></script>
+</head>
+<body>
+<div class="panel panel-default">
+     
+  <div class="panel-heading">秒杀商品列表</div>
+     
+  <table class="table">
+    <tr>
+      <td>商品标题</td>
+      <td>商品图片</td>
+      <td>商品原价</td>
+      <td>秒杀价</td>
+      <td>库存数量</td>
+      <td>详情</td>
+    </tr>
+
+    <tr th:each="seckillGoods : ${seckillGoodsList}">
+      <td th:text="${seckillGoods.goodsTitle}"></td>
+      <td><img th:src="@{${seckillGoods.goodsImg}}" height="100px" width="200px" alt=""/></td>
+      <td th:text="${seckillGoods.goodsPrice}"></td>
+      <td th:text="${seckillGoods.seckillPrice}"></td>
+      <td th:text="${seckillGoods.stockCount}"></td>
+      <td>
+        <a href="javascript:;" th:layuimini-content-href="'seckillGoodsDetail.htm?seckillGoodsId='+${seckillGoods.id}"
+           data-title="商品详情">详情</a>
+      </td>
+    </tr>
+
+  </table>
+</div>
+</body>
+</html>

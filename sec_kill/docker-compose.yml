@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  redis:
+    container_name: redis-server
+    ports:
+      - 6379:6379
+    image: redis:latest
+    command: redis-server --requirepass 123456
+
+  rabbitmq:
+    container_name: amqp
+    ports:
+      - 5672:5672
+      - 15672:15672
+    image: rabbitmq:management
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: 123456
+
+  mariadb:
+    image: mariadb:10.3
+    container_name: mariadb
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker_IMG/mysql/mariadb/conf/:/etc/mysql
+      - ./docker_IMG/mysql/mariadb/data/:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: 123456
+
+#  seckillapp:
+#    image: seckill_app:latest
+#    build:
+#      context: ./
+#      dockerfile: Dockerfile
+#    depends_on:
+#      - redis
+#      - mariadb
+#      - rabbitmq
+#    ports:
+#      - 8080:8080

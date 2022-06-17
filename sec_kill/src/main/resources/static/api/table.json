@@ -1,0 +1,33 @@
+{
+  "code": 0,
+  "msg": "",
+  "count": 1000,
+  "data": [
+    {
+      "id": 10000,
+      "username": "user-0",
+      "sex": "女",
+      "city": "城市-0",
+      "sign": "签名-0",
+      "experience": 255,
+      "logins": 24,
+      "wealth": 82830700,
+      "classify": "作家",
+      "score": 57
+    },
+    {
+      "id": 55907,
+      "userId": 13751378427,
+      "goodsId": 1,
+      "deliveryAddr": "",
+      "goodsName": "Mac mini",
+      "goodsCount": 1,
+      "goodsPrice": 6999.00,
+      "orderChannel": 1,
+      "status": 0,
+      "createTime": "2022-04-27T10:53:16.000+00:00",
+      "payTime": null,
+      "goodsImg": "/img/mini.jpeg"
+    }
+  ]
+}

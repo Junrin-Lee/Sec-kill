@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>登录</title>
+  <!-- jquery -->
+  <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+  <script type="text/javascript" th:src="@{/jquery-validation/jquery.validate.min.js}"></script>
+  <script type="text/javascript" th:src="@{/jquery-validation/localization/messages_zh.min.js}"></script>
+  <!-- layer -->
+  <script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+  <!-- md5.js -->
+  <script type="text/javascript" th:src="@{/js/md5.min.js}"></script>
+  <!-- common.js -->
+  <script type="text/javascript" th:src="@{/js/common.js}"></script>
+  <!-- 远程仓库 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+  <!-- login_css -->
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- 哪个具有right-panel-active哪个就优先显示 -->
+<!--<div class="container right-panel-active">-->
+<div class="container">
+  <!-- 登录 -->
+  <div class="container_form container--signin">
+    <form class="form" name="loginForm" id="loginForm" method="post">
+      <h2 class="form_title">登录</h2>
+      <input type="text" class="input" id="mobile_login" name="mobile" placeholder="请输入手机号"/>
+      <input type="password" id="password_login" class="input" name="password" placeholder="请输入密码"/>
+      <input type="text" id="captcha" name="captcha" class="input" placeholder="请输入验证码"/>
+      <img src="" alt="" id="captchaImg" style="width: 130px;height: 30px;" onclick="getCaptcha()">
+      <a href="#" class="link">忘记密码？</a>
+      <input type="submit" class="btn" value="登录" onclick="login()"/>
+    </form>
+  </div>
+
+  <!-- 注册 -->
+  <div class="container_form container--signup">
+    <form class="form" id="registerForm" name="registerForm" method="post">
+      <h2 class="form_title">注册</h2>
+      <input type="text" class="input" id="mobile_register" name="mobile" placeholder="请输入手机号"/>
+      <input type="password" id="password_register" class="input" name="password" placeholder="请输入密码"/>
+      <input type="password" id="password_register_ack" class="input" name="password" placeholder="再次输出密码"/>
+      <input type="submit" class="btn" value="注册" onclick="register()"/>
+    </form>
+  </div>
+
+  <!-- 浮层 -->
+  <div class="container_overlay">
+    <div class="overlay">
+      <div class="overlay_panel overlay--left">
+        <button class="btn" id="signIn">登录</button>
+      </div>
+      <div class="overlay_panel overlay--right">
+        <button class="btn" id="signUp">注册</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 背景 -->
+<div class="slidershow">
+  <div class="slidershow--image" style="background-image: url('https://source.unsplash.com/Snqdjm71Y5s')"></div>
+  <div class="slidershow--image" style="background-image: url('https://source.unsplash.com/5APj-fzKE-k')"></div>
+  <div class="slidershow--image" style="background-image: url('https://source.unsplash.com/wnbBH_CGOYQ')"></div>
+  <div class="slidershow--image" style="background-image: url('https://source.unsplash.com/OkTfw7fXLPk')"></div>
+</div>
+
+<!-- partial -->
+<script th:src="@{/js/script.js}"></script>
+</body>
+
+<script>
+    // 页面加载显示
+    $(function () {
+        getCaptcha();
+    });
+
+    // 获取秒杀验证码
+    function getCaptcha() {
+        $('#captchaImg').attr("src", "common/captcha?timeStamp=" + new Date().getTime())
+    }
+
+    function login() {
+        $("#loginForm").validate({
+            submitHandler: function (form) {
+                doLogin();
+            }
+        });
+    }
+
+    function register() {
+        debugger;
+        $("#registerForm").validate({
+            submitHandler: function (form) {
+                doRegister();
+            }
+        });
+    }
+
+    function doRegister() {
+        g_showLoading();
+        var Pass = $("#password_register").val();
+        var PassAck = $("#password_register_ack").val();
+        if (Pass === PassAck) {
+            var password = f_md5(Pass);
+            $.ajax({
+                url: "/login/doRegister",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    mobile: $("#mobile_register").val(),
+                    password: password,
+                },
+                success: function (data) {
+                    layer.closeAll();
+                    if (data.code == 200) {
+                        layer.msg("注册成功！");
+                        setTimeout("window.location.href='/'", 2000);
+                    } else {
+                        layer.msg(data.message);
+                    }
+                },
+                error: function () {
+                    layer.closeAll();
+                }
+            });
+        } else {
+            layer.msg("两次密码输入不一致！");
+        }
+    }
+
+    function doLogin() {
+        g_showLoading();
+        var inputPass = $("#password_login").val();
+        // var salt = g_passsword_salt;
+        // var str = "" + salt.charAt(0) + salt.charAt(2) + inputPass + salt.charAt(5) + salt.charAt(4);
+        var password = f_md5(inputPass);
+
+
+        $.ajax({
+            url: "/login/doLogin",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                mobile: $("#mobile_login").val(),
+                password: password,
+                captcha: $("#captcha").val()
+            },
+            success: function (data) {
+                layer.closeAll();
+                // debugger
+                if (data.code == 200) {
+                    layer.msg("登录成功！");
+                    setTimeout("window.location.href='/'", 2000);// 延迟登录,给后端充足的时间加载数据
+                    // window.location.href = "/goods/toList";
+                } else {
+                    layer.msg(data.message);
+                }
+            },
+            error: function () {
+                layer.closeAll();
+            }
+        });
+    }
+</script>
+</html>

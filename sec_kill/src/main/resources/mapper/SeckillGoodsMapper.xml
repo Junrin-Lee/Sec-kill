@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.pointer.lrl.generator.mapper.SeckillGoodsMapper">
+
+<!--    <select id="findSeckillGoodsVo" resultType="goodsVo">-->
+<!--        select g.id,-->
+<!--               g.goods_name,-->
+<!--               g.goods_price,-->
+<!--               g.goods_img,-->
+<!--               g.goods_title,-->
+<!--               g.goods_stock,-->
+<!--               g.goods_detail,-->
+<!--               sg.seckill_price,-->
+<!--               sg.stock_count,-->
+<!--               sg.start_time,-->
+<!--               sg.end_time-->
+<!--        from t_goods g-->
+<!--                 right join t_seckill_goods sg on g.id = sg.goods_id-->
+<!--    </select>-->
+
+    <select id="findSeckillGoodsVo" resultType="seckillGoodsVo">
+        select sg.id,
+               sg.seckill_price,
+               g.goods_name,
+               g.goods_price,
+               g.goods_title,
+               g.goods_img
+        from t_goods g
+                 right join t_seckill_goods sg on g.id = sg.goods_id
+        where sg.deleted=0
+    </select>
+
+    <select id="findSeckillGoodsVoById" resultType="seckillGoodsVo">
+        select
+               g.goods_name,
+               g.goods_price,
+               g.goods_img,
+               g.goods_title,
+               g.goods_stock,
+               g.goods_detail,
+               g.create_user_id,
+               sg.id,
+               sg.seckill_price,
+               sg.stock_count,
+               sg.start_time,
+               sg.end_time
+        from t_goods g
+                 right join t_seckill_goods sg on g.id = sg.goods_id
+        where sg.id = #{sgid} and g.deleted=0
+    </select>
+
+    <select id="getSeckillGoodsVoByMyself" resultType="seckillGoodsVo">
+        select sg.id,
+               sg.seckill_price,
+               sg.stock_count,
+               sg.start_time,
+               sg.end_time,
+               sg.create_time,
+               sg.update_time,
+               sg.goods_id,
+               g.goods_name,
+               g.goods_price,
+               g.goods_img,
+               g.goods_title,
+               g.goods_pic,
+               g.goods_stock,
+               g.goods_detail,
+               g.create_user_id
+        from t_goods g
+                 right join t_seckill_goods sg on g.id = sg.goods_id
+        where g.create_user_id = #{uid} and sg.deleted=0
+    </select>
+
+    <select id="getSeckillGoodsVoByMyselfWithLike" resultType="seckillGoodsVo">
+        select sg.id,
+               sg.seckill_price,
+               sg.stock_count,
+               sg.start_time,
+               sg.end_time,
+               sg.create_time,
+               sg.update_time,
+               sg.goods_id,
+               g.goods_name,
+               g.goods_price,
+               g.goods_img,
+               g.goods_title,
+               g.goods_pic,
+               g.goods_stock,
+               g.goods_detail,
+               g.create_user_id
+        from t_goods g
+                 right join t_seckill_goods sg on g.id = sg.goods_id
+        where g.create_user_id = #{uid} and sg.deleted=0
+        <if test="sgid != null">and sg.id = #{sgid}</if>
+        <if test="goodsName != null">and LOWER(g.goods_name) like concat('%', #{goodsName}, '%')</if>
+    </select>
+
+    <select id="isSeckillGoodsCreate" resultType="java.lang.Integer">
+        select count(*)
+        from t_goods g
+                 right join t_seckill_goods sg on g.id = sg.goods_id
+        where sg.deleted=0 and g.deleted=0
+        and g.create_user_id=#{uid} and sg.id=#{sgid}
+    </select>
+
+</mapper>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>商品列表</title>
+  <!-- jquery -->
+  <script type="text/javascript" src="/js/jquery.min.js"></script>
+  <!-- bootstrap -->
+  <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css"/>
+  <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+  <!-- layer -->
+  <script type="text/javascript" src="/layer/layer.js"></script>
+  <!-- common.js -->
+  <script type="text/javascript" src="/js/common.js"></script>
+
+</head>
+<body>
+<div class="panel panel-default">
+     
+  <div class="panel-heading">秒杀商品列表</div>
+     
+  <table class="table">
+    <tr>
+      <td>商品名称</td>
+      <td colspan="3" id="goodsName"></td>
+    </tr>
+    <tr>
+      <td>商品图片</td>
+      <td colspan="3">
+        <img src="" id="goodsImg" alt="" width="100" height="100"/>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">订单价格</td>
+      <td id="goodsPrice"></td>
+    </tr>
+    <tr>
+      <td colspan="3">下单时间</td>
+      <td id="createTime"></td>
+    </tr>
+    <tr>
+      <td colspan="3">订单状态</td>
+      <td id="status"></td>
+      <td>
+        <form id="seckillForm" method="post">
+          <button class="btn btn-primary btn-block" type="submit" id="buyButton">立即支付</button>
+          <input type="hidden" name="orderId">
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">收货人</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td colspan="3">收获地址</td>
+      <td></td>
+    </tr>
+  </table>
+</div>
+</body>
+<script lang=type="text/javascript" src="/js/seckillOrderDetail.js"></script>
+</html>

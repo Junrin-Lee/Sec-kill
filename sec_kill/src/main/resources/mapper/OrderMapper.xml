@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.pointer.lrl.generator.mapper.OrderMapper">
+
+    <select id="selectOrderVoByUid" resultType="orderVo">
+        select o.id,
+               o.user_id,
+               o.goods_id,
+               o.delivery_addr,
+               o.goods_name,
+               o.goods_count,
+               o.goods_price,
+               o.order_channel,
+               o.status,
+               o.create_time,
+               o.pay_time,
+               g.goods_img
+        from t_goods g
+                 right join t_order o on g.id = o.goods_id
+        where g.create_user_id <![CDATA[ <> ]]> #{uid}
+          and o.user_id = #{uid}
+    </select>
+
+    <select id="selectOrderVoLikeOrderId" resultType="orderVo">
+        select o.id,
+               o.user_id,
+               o.goods_id,
+               o.delivery_addr,
+               o.goods_name,
+               o.goods_count,
+               o.goods_price,
+               o.order_channel,
+               o.status,
+               o.create_time,
+               o.pay_time,
+               g.goods_img
+        from t_goods g
+                 right join t_order o on g.id = o.goods_id
+        where o.user_id = #{uid}
+          and g.create_user_id <![CDATA[ <> ]]> #{uid}
+          and o.id like concat('%', #{oid}, '%')
+    </select>
+
+    <select id="selectConsumerOrderVoByUid" resultType="orderVo">
+        select o.id,
+               o.user_id,
+               o.goods_id,
+               o.delivery_addr,
+               o.goods_name,
+               o.goods_count,
+               o.goods_price,
+               o.order_channel,
+               o.status,
+               o.create_time,
+               o.pay_time,
+               g.goods_img
+        from t_goods g
+                 right join t_order o on g.id = o.goods_id
+        where g.create_user_id = #{uid} and g.deleted=0 and o.deleted=0
+    </select>
+
+    <select id="selectConsumerOrderVoLikeOrderId" resultType="orderVo">
+        select o.id,
+               o.user_id,
+               o.goods_id,
+               o.delivery_addr,
+               o.goods_name,
+               o.goods_count,
+               o.goods_price,
+               o.order_channel,
+               o.status,
+               o.create_time,
+               o.pay_time,
+               g.goods_img
+        from t_goods g
+                 right join t_order o on g.id = o.goods_id
+        where g.create_user_id = #{uid} and g.deleted=0 and o.deleted=0
+          and o.id like concat('%', #{oid}, '%')
+    </select>
+
+
+</mapper>

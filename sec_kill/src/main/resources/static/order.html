@@ -1,0 +1,284 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<div class="layuimini-container layuimini-page-anim">
+  <div class="layuimini-main">
+
+    <fieldset class="table-search-fieldset">
+      <legend>搜索信息</legend>
+      <div style="margin: 10px 10px 10px 10px">
+        <form class="layui-form layui-form-pane" action="">
+          <div class="layui-form-item">
+            <div class="layui-inline">
+              <label class="layui-form-label">订单号</label>
+              <div class="layui-input-inline">
+                <input type="text" name="id" autocomplete="off" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-inline">
+              <button type="submit" class="layui-btn layui-btn-primary" lay-submit lay-filter="data-search-btn">
+                <i class="layui-icon"></i> 搜 索
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </fieldset>
+
+    <script type="text/html" id="toolbarDemo">
+      <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除</button>
+      </div>
+    </script>
+
+    <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+    <script type="text/html" id="currentTableBar">
+      <a id="editBtn-{{d.id}}" class="layui-btn layui-btn-normal layui-btn-lg data-count-edit" lay-event="edit">编辑</a>
+      <a id="payBtn-{{d.id}}" class="layui-btn layui-btn-normal layui-btn-lg data-count-edit" lay-event="pay">支付</a>
+      <a id="delBtn-{{d.id}}" class="layui-btn layui-btn-danger layui-btn-lg  data-count-delete"
+         lay-event="delete">删除</a>
+    </script>
+
+  </div>
+</div>
+
+<script type="text/html" id="imgtmp">
+  <img src="{{ d.goodsImg }}">
+</script>
+
+<script type="text/html" id="addrtmp">
+  {{#  if(d.deliveryAddr != null){ }}
+  <textarea id="ttt-{{d.id}}" class="edit_contain" readonly layui-varify="required" style="height: 75px;border: none;">{{ d.deliveryAddr }}</textarea>
+  {{#  } else {}}
+  <textarea id="ttt-{{d.id}}" class="edit_contain" readonly layui-varify="required" style="height: 75px;border: none;">{{  }}</textarea>
+  {{#  } }}
+</script>
+
+<script type="text/html" id="createTime">
+  {{#  if(d.createTime != null){ }}
+  <div>{{ layui.util.toDateString(d.createTime, 'yyyy年MM月dd日 HH:mm:ss') }}</div>
+  {{#  } else {}}
+  <div>{{}}</div>
+  {{#  } }}
+</script>
+
+<script type="text/html" id="payTime">
+  {{#  if(d.payTime !=null){ }}
+  <div>{{layui.util.toDateString(d.payTime, 'yyyy年MM月dd日 HH:mm:ss')}}</div>
+  {{#  } else {}}
+  <div>{{}}</div>
+  {{#  } }}
+</script>
+
+<script type="text/html" id="orderChannel">
+  {{#  if(d.orderChannel == 1){  }}
+  <div>PC端</div>
+  {{#  } else if(d.orderChannel == 2) {  }}
+  <div>Android端</div>
+  {{#  } else if(d.orderChannel == 3) {  }}
+  <div>IOS端</div>
+  {{#  }  }}
+</script>
+
+<script type="text/html" id="status">
+  {{#  if(d.status == 0){  }}
+  <div>未支付</div>
+  {{#  } else if(d.status == 1) {  }}
+  <div>已支付</div>
+  {{#  } else if(d.status == 2) {  }}
+  <div>已发货</div>
+  {{#  } else if(d.status == 3) {  }}
+  <div>已收获</div>
+  {{#  } else if(d.status == 4) {  }}
+  <div>已退款</div>
+  {{#  }  }}
+</script>
+
+<script>
+    layui.use(['form', 'table', 'miniPage', 'element'], function () {
+            var $ = layui.jquery,
+                form = layui.form,
+                table = layui.table,
+                miniPage = layui.miniPage;
+
+            table.render({
+                elem: '#currentTableId',
+                url: 'order/myOrderMsg',
+                toolbar: '#toolbarDemo',
+                defaultToolbar: ['filter', 'exports', 'print', {
+                    title: '提示',
+                    layEvent: 'LAYTABLE_TIPS',
+                    icon: 'layui-icon-tips'
+                }],
+                cols: [
+                    [
+                        {type: "checkbox", width: 50},
+                        {field: 'id', width: 120, title: '订单号', sort: true},
+                        {field: 'goodsName',width:120, title: '商品名称'},
+                        {field: 'goodsImg', width: 120, title: '商品图片', templet: "#imgtmp"},
+                        {field: 'goodsCount', width: 120, title: '购买数量', sort: true},
+                        {field: 'goodsPrice',width:120, title: '购买价格'},
+                        {field: 'orderChannel', width: 120, title: '购买途径', templet: "#orderChannel"},
+                        {field: 'status', width: 100, title: '交易状态', templet: "#status"},
+                        {field: 'createTime', title: '下单时间', templet: "#createTime"},
+                        {field: 'payTime', title: '支付时间', templet: "#payTime"},
+                        {field: 'deliveryAddr', title: '收获地址', sort: true, templet: "#addrtmp"},
+                        {title: '操作', minWidth: 100, toolbar: '#currentTableBar', align: "center"}
+                    ]
+                ],
+                limits: [10, 15, 20, 25, 50, 100],
+                limit: 15,
+                page: true,
+                skin: 'line'
+            });
+
+            // 监听搜索操作
+            form.on('submit(data-search-btn)', function (obj) {
+                var result = JSON.stringify(obj.field);
+                console.log(result)
+                var index = layer.msg('查询中，请稍后。。。', {icon: 16, time: false, shade: 0});
+                setTimeout(function () {
+                    table.reload('currentTableId', {
+                        methods: "GET",
+                        request: {
+                            pageName: 'page', //页码的参数名称，默认：page
+                            limitName: 'limit' //每页数据量的参数名，默认：limit
+                        },
+                        where: {
+                            id: obj.field.id
+                        },
+                        page: {
+                            curr: 1
+                        }
+                    }, 'data');
+                    layer.close(index);
+                }, 800);
+
+                return false;
+            });
+
+            /**
+             * toolbar事件监听
+             */
+            table.on('toolbar(currentTableFilter)', function (obj) {
+                if (obj.event === 'delete') {  // 监听删除操作
+                    var checkStatus = table.checkStatus('currentTableId'), data = checkStatus.data, arr = " ";
+                    for (var i = 0; i < data.length; i++) {
+                        arr = arr + " " + data[i].id;
+                    }
+
+                    layer.confirm("你确定要删除商品id为[ " + arr + " ]的商品吗？",
+                        {btn: ["确定", "取消"]},
+                        function () {
+                            layui.use('miniPage', function () {
+                                $.ajax({
+                                    url: "/order/delOrders",
+                                    type: "DELETE",
+                                    contentType: 'application/json',
+                                    data: JSON.stringify(data),
+                                    success: function (data) {
+                                        if (data.code == 200) {
+                                            layer.msg(data.message)
+                                        } else {
+                                            layer.msg(data.message)
+                                        }
+                                    },
+                                    error: function () {
+                                        layer.msg(data.message)
+                                    }
+                                })
+                            })
+                        },
+                        function (index) {
+                            layer.close(index)
+                        }
+                    )
+                    layer.close()
+                }
+            });
+
+            //监听表格复选框选择
+            table.on('checkbox(currentTableFilter)', function (obj) {
+                console.log(obj)
+            });
+
+            // 监听按钮操作
+            table.on('tool(currentTableFilter)', function (obj) {
+                var data = obj.data;
+                var btn = $('#editBtn-' + data.id);
+                var text = $('#ttt-' + data.id);
+
+                if (obj.event === 'edit') {
+                    text.attr("readonly", false);
+                    btn.text('保存')
+                    btn.attr("lay-event", 'save')
+                } else if (obj.event === 'save') {
+                    text.attr("readonly", true);
+                    obj.event = 'edit'
+                    btn.text('编辑')
+                    btn.attr("lay-event", 'edit')
+
+                    $.ajax({
+                        url: "/order/updateUserAddr",
+                        type: "PUT",
+                        data: {
+                            id: data.id,
+                            addr: text.val(),
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                var index = layer.msg("地址修改成功！");
+                                setTimeout(function () {
+                                    table.reload('currentTableId', {
+                                        methods: "GET",
+                                        request: {
+                                            pageName: 'page', //页码的参数名称，默认：page
+                                            limitName: 'limit' //每页数据量的参数名，默认：limit
+                                        },
+                                        page: {
+                                            curr: 1
+                                        }
+                                    }, 'data');
+                                    layer.close(index);
+                                }, 2000);
+                            } else {
+                                layer.msg(data.message);
+                            }
+                        },
+                        error: function (data) {
+                            layer.msg(data.message);
+                        }
+                    });
+                } else if (obj.event === 'delete') {
+                    layer.confirm("你确定要删除商品id为[ " + obj.data.id + " ]的商品吗？",
+                        {btn: ["确定", "取消"]},
+                        function (index) {
+                            layui.use('miniPage', function () {
+                                $.ajax({
+                                    url: "/order/delOrders",
+                                    type: "DELETE",
+                                    contentType: 'application/json',
+                                    data: '[' + JSON.stringify(obj.data) + ']',
+                                    success: function (data) {
+                                        if (data.code == 200) {
+                                            obj.del();
+                                            layer.msg(data.message)
+                                        } else {
+                                            layer.msg(data.message)
+                                        }
+                                    },
+                                    error: function () {
+                                        layer.msg("服务器异常！")
+                                    }
+                                })
+                            })
+                        },
+                        function () {
+                            layer.close()
+                        }
+                    )
+                    layer.close()
+                }
+            });
+        }
+    );
+</script>

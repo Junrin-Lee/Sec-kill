@@ -1,0 +1,175 @@
+server:
+  port: 8080
+
+spring:
+  config:
+    import: classpath:data/data.properties
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+  # 数据库信息
+  datasource:
+    druid:
+      username: ${db.name}
+      password: ${db.pwd}
+      url: ${db.url}
+      driver-class-name: ${db.driver}
+
+      name: ${db.dbName}
+      db-type: ${db.datasourceType}
+
+      # 初始化时建立物理连接的个数
+      initial-size: 2
+      # 最大连接池数量
+      max-active: 5
+      # 最小连接池数量
+      min-idle: 2
+      # 获取连接时最大等待时间，单位毫秒
+      max-wait: 10000
+      # statViewServlet配置，说明配置参考druid wiki
+      stat-view-servlet:
+        # 是否启用statViewServlet配置
+        enabled: true
+        # 访问监控页面
+        url-pattern: "/druid/*"
+        # 禁止手动重置监控数据
+        reset-enable: false
+        # 设置监控页面的登陆名
+        login-username: ${druid.loginUserName}
+        # 设置监控页面的登陆密码
+        login-password: ${druid.loginPassword}
+        # 允许谁访问
+        allow: localhost
+
+      #WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
+      web-stat-filter:
+        # 是否启用WebStatFilter
+        enabled: true
+        # 访问路径
+        url-pattern: "/*"
+        # 排除不必要的url
+        exclusions: "*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*"
+        # 监控最大session数，默认是1000
+        session-stat-max-count: 1000
+        # 是否启用session的统计功能
+        session-stat-enable: true
+        # 是否启用监控单个Url调用的sql列表
+        profile-enable: true
+        # 使druid当前session的用户是谁，session_user_key是你保存到session中的sessionName
+        principalSessionName: session_user_key
+        # 使druid只当当前的user是谁,cookie_user_key是你保存在cookie中的cookieName
+        principalCookieName: cookie_user_key
+      # 解决testWhileIdle is true, validationQuery not set
+      validation-query: select 1
+      test-while-idle: true
+
+  thymeleaf:
+    cache: false
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+
+  # redis
+  redis:
+    host: ${redis.host}
+    password: ${redis.pwd}
+    port: ${redis.port}
+    database: ${redis.db}
+
+  # 缓存
+  cache:
+    type: redis
+
+  # rabbitMQ
+  rabbitmq:
+    host: ${mq.host}
+    username: ${mq.username}
+    password: ${mq.password}
+    # 虚拟主机
+    virtual-host: /
+    port: ${mq.port}
+    listener:
+      simple:
+        # 消费者最小数量
+        concurrency: 10
+        # 消费者最大数量
+        max-concurrency: 100
+        # 消费者每次最大能消费的数量
+        prefetch: 1
+        # 是否默认自启容器
+        auto-startup: true
+        default-requeue-rejected: true
+    template:
+      retry:
+        # 默认true，发布重试
+        enabled: true
+        # 重试时间
+        initial-interval: 1000
+        # 最大重试次数
+        max-attempts: 3
+        # 重试最大的时间间隔，默认10000ms
+        max-interval: 10000
+        # 重试间隔的乘数
+        multiplier: 1.0
+
+  web:
+    resources:
+      # 启动默认静态资源处理，默认开始
+      add-mappings: true
+      cache:
+        cachecontrol:
+          # 缓存响应时间，单位秒
+          max-age: 3600
+      chain:
+        # 资源链启动缓存，默认开启
+        cache: true
+        # 启动资源链
+        enabled: true
+        # 启动压缩资源，默认禁止
+        compressed: true
+      static-locations: classpath:/static/
+
+  servlet:
+    multipart:
+      # 开启 multipart 上传功能
+      enabled: true
+      # 文件写入磁盘的阈值
+      file-size-threshold: 2KB
+      # 最大文件大小
+      max-file-size: 2MB
+      # 最大请求大小
+      max-request-size: 5MB
+
+# logback日志配置
+logging:
+  # 总体管理某些框架日志
+  config: classpath:log/logback-spring.xml
+  # 日志输出目录
+  file:
+    path: logs
+  # 单独控制某些框架的日志
+  level:
+    org.thymeleaf: info
+
+# Mybatis-plus配置
+mybatis-plus:
+  configuration:
+    # mybatis缓存
+    cache-enabled: true
+    map-underscore-to-camel-case: true
+  #配置Mapper映射文件
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  #配置MyBatis数据返回类型别名（默认别名是类名）
+  type-aliases-package: cn.pointer.lrl.generator.pojo,cn.pointer.lrl.vo,cn.pointer.lrl.po
+  # 配置逻辑删除
+  global-config:
+    db-config:
+      logic-delete-value: 1
+      logic-not-delete-value: 0
